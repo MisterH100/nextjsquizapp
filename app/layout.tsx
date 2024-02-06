@@ -3,7 +3,6 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 import { QuizContextProvider } from "@/lib/globalContext";
 import { Header } from "@/components/Header";
-
 const poppins = Poppins({subsets:["latin"],weight:["400","500","900"]})
 
 export const metadata: Metadata = {
@@ -18,12 +17,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <QuizContextProvider>
-        <body className={`${poppins.className} gradient_bg relative`}>
-          <Header/>
-          {children}
-        </body>
-      </QuizContextProvider>
+        <QuizContextProvider>
+          <body className={`${poppins.className} gradient_bg relative`}>
+            <Header/>
+            {children}
+          </body>
+        </QuizContextProvider>
     </html>
   );
 }

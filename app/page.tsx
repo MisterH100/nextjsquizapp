@@ -1,7 +1,7 @@
 'use client'
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { useQuizContext } from "@/lib/globalContext";
+import { IQuiz, useQuizContext } from "@/lib/globalContext";
 import { useRouter } from "next/navigation";
 import Image from 'next/image'
 import stopWatch from "@/public/stopwatch.svg"
@@ -69,7 +69,7 @@ useEffect(()=>{
           <Card className="w-full md:w-[850px] bg-white border-none mb-10 rounded-t-xl">
             <CardHeader>
               <CardDescription>Welcome
-                <span className="font-bold pl-2">{user.loggedIn?user.username:null}</span>
+                <span className="font-bold pl-2">{user?user.loggedIn?user.username:null:null}</span>
               </CardDescription>
               <CardTitle className="text-black text-center p-2 font-bold text-5xl">Quiz Me!</CardTitle>
             </CardHeader>
@@ -122,7 +122,8 @@ useEffect(()=>{
             </Button>
           </CardContent>
         </Card>
-      </div>
+      </div>    
     </main>
   );
 }
+

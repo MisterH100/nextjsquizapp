@@ -3,5 +3,5 @@
 @tailwind utilities;
  
 .gradient_bg{
-    background-image: linear-gradient(45deg, #001527, #1b0f00);
+    background-image: linear-gradient(45deg, #006dcd, #d50000);
 }

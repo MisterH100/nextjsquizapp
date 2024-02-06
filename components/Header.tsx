@@ -42,10 +42,10 @@ export const Header =()=>{
         <header className="fixed w-full z-50 p-4 border-none">
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                    <Alert className="flex justify-between w-full md:w-[500px] rounded-full p-4 mx-auto bg-white cursor-pointer shadow-lg">
-                        <div>
-                            <AlertTitle>Develop with me!</AlertTitle>
-                            <AlertDescription>
+                    <Alert className="flex justify-between w-full md:w-[500px] rounded-b-xl p-4 mx-auto bg-white cursor-pointer shadow-lg">
+                        <div className="w-2/3 md:w-full truncate">
+                            <AlertTitle className="truncate">Develop with me!</AlertTitle>
+                            <AlertDescription className="truncate">
                                 Follow me on my socials and check out my portfolio
                             </AlertDescription>
                         </div>
