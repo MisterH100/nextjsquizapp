@@ -13,7 +13,7 @@ import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
 
 export const Assesment =()=>{
-    const {correctQuizes,inCorrectQuizes,points,setCorrectQuizes,setInCorrectQuizes,setComplete,setTimed,setPoints} = useQuizContext();
+    const {correctQuizzes,inCorrectQuizzes,points,setCorrectQuizzes,setInCorrectQuizzes,setComplete,setTimed,setPoints} = useQuizContext();
     const router = useRouter();
     return(
         <div className="w-full text-black">
@@ -21,11 +21,11 @@ export const Assesment =()=>{
                 <Card className="border-none bg-white p-4 w-full md:w-1/2 min-h-[150px]">
                     <CardHeader>
                         <CardTitle className="">Correct</CardTitle>
-                        <CardDescription>{correctQuizes.length}</CardDescription>
+                        <CardDescription>{correctQuizzes.length}</CardDescription>
                     </CardHeader>
                     <CardContent>
                     <ScrollArea className="h-48 rounded-md border">
-                        {correctQuizes.map((correctQ)=>
+                        {correctQuizzes.map((correctQ)=>
                         <div key={correctQ.id} className="w-full border border-gray-600 p-2 mb-2 text-base font-normal">
                             <div>
                                 <p>Q: {correctQ.question}</p>
@@ -39,11 +39,11 @@ export const Assesment =()=>{
                 <Card className="border-none bg-white p-4 w-full md:w-1/2 min-h-[150px]">
                     <CardHeader>
                         <CardTitle>Incorrect</CardTitle>
-                        <CardDescription>{inCorrectQuizes.length}</CardDescription>
+                        <CardDescription>{inCorrectQuizzes.length}</CardDescription>
                     </CardHeader>
                     <CardContent>
                     <ScrollArea className="h-48 rounded-md border">
-                        {inCorrectQuizes.map((incorrectQ)=>
+                        {inCorrectQuizzes.map((incorrectQ)=>
                         <div key={incorrectQ.id} className="w-full border border-gray-600 p-2 mb-2 text-base font-normal">
                             <div>
                                 <p>Q: {incorrectQ.question}</p>
@@ -67,8 +67,8 @@ export const Assesment =()=>{
                 <Button 
                     className="bg-red-600 text-white w-[200px] rounded text-center text-xl hover:bg-white hover:text-black"
                     onClick={()=>{
-                        setCorrectQuizes([])
-                        setInCorrectQuizes([])
+                        setCorrectQuizzes([])
+                        setInCorrectQuizzes([])
                         setPoints(0)
                         setComplete(false)
                         setTimed(false)

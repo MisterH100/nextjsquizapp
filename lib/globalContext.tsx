@@ -1,18 +1,18 @@
 'use client'
-import { Dispatch, SetStateAction, createContext, useContext, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, createContext, useContext, useState } from "react";
 import { useLocalStroge } from "./usernameStorage";
 
 interface contextProps{
-  user: IUser,
-  setUser: (Dispatch<SetStateAction<IUser>>),
+  player: IPlayer,
+  setPlayer: (Dispatch<SetStateAction<IPlayer>>),
   currQuiz: number,
   setCurrQuiz: (Dispatch<SetStateAction<number>>),
   points: number,
   setPoints: (Dispatch<SetStateAction<number>>)
-  correctQuizes: IQuiz[],
-  setCorrectQuizes: (Dispatch<SetStateAction<IQuiz[]>>),
-  inCorrectQuizes: IQuiz[],
-  setInCorrectQuizes: (Dispatch<SetStateAction<IQuiz[]>>),
+  correctQuizzes: IQuiz[],
+  setCorrectQuizzes: (Dispatch<SetStateAction<IQuiz[]>>),
+  inCorrectQuizzes: IQuiz[],
+  setInCorrectQuizzes: (Dispatch<SetStateAction<IQuiz[]>>),
   complete: boolean,
   setComplete: (Dispatch<SetStateAction<boolean>>),
   start: ()=> void,
@@ -29,35 +29,34 @@ export interface IQuiz{
   answers:IAnswers[],
   correctAnswer : string,
   points: number,
-  answerd: boolean,
+  answered: boolean,
   answer:string,
 }
-export interface IUser{
+export interface IPlayer{
   username: string,
-  loggedIn: boolean
+  loggedIn: boolean,
 }
 const QuizContext = createContext<contextProps>({} as contextProps)
 
 export const QuizContextProvider = ({ children }: { children: React.ReactNode }) => {
-    const [user,setUser] = useLocalStroge<IUser>("username",{} as IUser);
-  
+    const [player,setPlayer] = useLocalStroge<IPlayer>("quizPlayer",{} as IPlayer);
     const [currQuiz, setCurrQuiz] = useState(0);
     const [points, setPoints] = useState(0);
-    const [correctQuizes, setCorrectQuizes] = useState<IQuiz[]>([ ]);
-    const [inCorrectQuizes, setInCorrectQuizes] = useState<IQuiz[]>([ ]);
+    const [correctQuizzes, setCorrectQuizzes] = useState<IQuiz[]>([ ]);
+    const [inCorrectQuizzes, setInCorrectQuizzes] = useState<IQuiz[]>([ ]);
     const [complete,setComplete] = useState(false);
     const [timed,setTimed] = useState(false);
 
     const start =() =>{
       setComplete(false);
       setCurrQuiz(0);
-      setCorrectQuizes([]),
-      setInCorrectQuizes([]),
+      setCorrectQuizzes([]),
+      setInCorrectQuizzes([]),
       setPoints(0)
     }
 
     return(
-      <QuizContext.Provider value={{user,setUser,currQuiz,setCurrQuiz,points,setPoints,correctQuizes,setCorrectQuizes,inCorrectQuizes,setInCorrectQuizes,complete,setComplete,start,timed,setTimed}}>
+      <QuizContext.Provider value={{player,setPlayer,currQuiz,setCurrQuiz,points,setPoints,correctQuizzes,setCorrectQuizzes,inCorrectQuizzes,setInCorrectQuizzes,complete,setComplete,start,timed,setTimed}}>
           {children}
       </QuizContext.Provider>
     )

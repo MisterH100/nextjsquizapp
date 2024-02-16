@@ -7,6 +7,7 @@ import { z } from "zod"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "./ui/form"
 import { Button } from "./ui/button"
 import { useQuizContext } from "@/lib/globalContext"
+import { useRef } from "react"
 
 const usernameSchema = z.object({
     username: z.string().min(3, {
@@ -17,16 +18,17 @@ const usernameSchema = z.object({
 })
 
 export const Modal = ()=>{
-    const {setUser} = useQuizContext();
+    const {setPlayer,player} = useQuizContext();
     const form = useForm<z.infer<typeof usernameSchema>>({
         resolver: zodResolver(usernameSchema),
         defaultValues: {
           username: "",
         },
-    })
+    });
+    const playerRef = useRef<any>(null);
 
     function onSubmit(values: z.infer<typeof usernameSchema>){
-        setUser({username: values.username,loggedIn:true})
+        setPlayer({...player,username:values.username,loggedIn:true})
     }
 
     return(
@@ -43,22 +45,32 @@ export const Modal = ()=>{
                             name="username"
                             render={({ field }) => (
                                 <FormItem>
-                                <FormLabel>Username</FormLabel>
-                                <FormControl>
-                                    <Input placeholder="eg: the_quiz_lord" {...field} />
-                                </FormControl>
-                                <FormDescription>
-                                    This is your display name.
-                                </FormDescription>
-                                <FormMessage />
+                                    <FormLabel>Username</FormLabel>
+                                    <FormControl>
+                                        <Input placeholder="eg: the_quiz_lord" {...field} ref={playerRef}/>
+                                    </FormControl>
+                                    <FormDescription>
+                                        This is your display name.
+                                    </FormDescription>
+                                    <FormMessage />
                                 </FormItem>
                             )}
                             />
-                            <Button 
-                                type="submit" 
-                                variant="outline" 
-                                className="bg-black text-white hover:text-black">Create
-                            </Button>
+                            <div className="w-full flex justify-between">
+                                <Button 
+                                    type="submit" 
+                                    variant="outline" 
+                                    className="bg-black text-white hover:text-black">Create
+                                </Button>
+                                <Button 
+                                    type="button" 
+                                    onClick={()=>
+                                        form.setValue("username",playerRef.current.value = "player"+(Date.now() + Math.random()).toString(36))
+                                    }
+                                    variant="outline" 
+                                    className="bg-blue-600 text-white hover:text-black">Generate Random
+                                </Button>
+                            </div>
                         </form>
                     </Form>
                 </CardContent>

@@ -23,7 +23,7 @@ export const Quiz =()=>{
         res.json(),
       ),
   })
-  const {setCorrectQuizes,setPoints,setInCorrectQuizes,setCurrQuiz,setComplete,complete,currQuiz,correctQuizes,inCorrectQuizes,timed,setTimed,start} = useQuizContext();
+  const {setPlayer,player,setCorrectQuizzes,setPoints,setInCorrectQuizzes,setCurrQuiz,setComplete,complete,currQuiz,correctQuizzes,inCorrectQuizzes,timed,setTimed,start} = useQuizContext();
   const [progress, setProgress] = useState(100);
   const choices = ["A","B","C"];
   const router = useRouter();
@@ -36,6 +36,7 @@ export const Quiz =()=>{
       }
     }
   },[progress])
+
 
   useEffect(()=>{
     if(progress < 1 || progress == 0){
@@ -53,19 +54,20 @@ export const Quiz =()=>{
 
   const compareAns =(quiz:IQuiz,ans:string)=>{
     if(quiz.correctAnswer == ans){
-      setCorrectQuizes([...correctQuizes,{...quiz, answerd: true}]);
+      setCorrectQuizzes([...correctQuizzes,{...quiz, answered: true}]);
       setPoints((prev)=> prev + quiz.points);
       setProgress(100)
     }else{
-      setInCorrectQuizes([...inCorrectQuizes,{...quiz, answerd: true,answer:ans}]);
+      setInCorrectQuizzes([...inCorrectQuizzes,{...quiz, answered: true,answer:ans}]);
       setProgress(100)
     }
     if(currQuiz < data.length){
       setCurrQuiz((prev)=>prev+1);
     }
-    if(currQuiz == data.length -1 || currQuiz == data.length){
+    if(currQuiz == data.length -1){
       setCurrQuiz(0);
       setComplete(true);
+      router.push("/assesment")
     }
   }
   if (isPending){
@@ -74,7 +76,7 @@ export const Quiz =()=>{
       <CardHeader>
         <CardTitle>Loading quizzes..</CardTitle>
       </CardHeader>
-      <CardContent>Loading.......</CardContent>
+      <CardContent>Fetching latest quizzes.......</CardContent>
     </Card>
     )
   }
@@ -82,10 +84,10 @@ export const Quiz =()=>{
     return(
       <Card className="border-none w-full md:w-[500px] overflow-hidden">
         <CardHeader>
-            <CardTitle>An error occured while loading quizzies {error.message}</CardTitle>
+            <CardTitle>An error occured while loading quizzes</CardTitle>
         </CardHeader>
         <CardContent>
-          Error
+          Error:{error.message}
         </CardContent>
       </Card>
     )

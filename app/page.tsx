@@ -12,9 +12,10 @@ import incorrectIcon from "@/public/incorrect.svg";
 import { Separator } from "@/components/ui/separator";
 import { Modal } from "@/components/Modal";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 export default function Home() {
-const {user,setTimed,points,complete,setCorrectQuizes,correctQuizes,setInCorrectQuizes,inCorrectQuizes,setComplete,setPoints} = useQuizContext();
+const {player,setTimed,points,complete,setCorrectQuizzes,correctQuizzes,setInCorrectQuizzes,inCorrectQuizzes,setComplete,setPoints} = useQuizContext();
 const [delay,setDelay] = useState(true);
 const router = useRouter();
 
@@ -27,35 +28,35 @@ useEffect(()=>{
   return (
     <main className="min-h-screen">
       {!delay&&
-        !user.loggedIn&&<Modal/>
+        !player.loggedIn&&<Modal/>
       }
       {complete?
         <div className="flex justify-center pt-40">
           <Card className="w-full sm:w-[500px] md:w-[850px] bg-white border-none mb-10 mx-auto rounded-t-xl">
             <CardHeader>
-              <CardTitle className="text-xl truncate">{user.username}</CardTitle>
+              <CardTitle className="text-xl truncate">{player.username}</CardTitle>
             </CardHeader>
             <CardContent>
               <CardTitle className="text-lg truncate">Stats</CardTitle>
               <Separator className="bg-gray-500"/>
-              <div className="py-4">
-                <p className="flex text-bold text-lg gap-2">
-                  <Image src={pointsIcon} alt="points-icon" width={24} height={24}/> Points: {points}
+              <Link href="/assesment" className="py-4">
+                <p className="flex text-bold text-lg gap-2 pt-2">
+                  <Image src={pointsIcon} alt="points-icon" width={24} height={24}/> Points: <span className="font-bold">{points}</span>
                 </p>
-                <p className="flex text-bold text-lg gap-2">
-                  <Image src={correctIcon} alt="correct-icon" width={24} height={24}/>Correct quizes: {correctQuizes.length}
+                <p className="flex text-bold text-lg gap-2 pt-2">
+                  <Image src={correctIcon} alt="correct-icon" width={24} height={24}/>Correct quizes: <span className="font-bold">{correctQuizzes.length}</span>
                 </p>
-                <p className="flex text-bold text-lg gap-2">
-                <Image src={incorrectIcon} alt="correct-icon" width={24} height={24}/> Incorrect Quizes: {inCorrectQuizes.length}
+                <p className="flex text-bold text-lg gap-2 pt-2">
+                <Image src={incorrectIcon} alt="correct-icon" width={24} height={24}/> Incorrect Quizes: <span className="font-bold">{inCorrectQuizzes.length}</span>
                 
                 </p>
-              </div>
+              </Link>
               <Separator className="bg-gray-500"/>
               <Button  
                 className="bg-red-600 text-white w-full md:w-[200px] rounded text-center text-xl hover:bg-white hover:text-black border border-white hover:border-black mt-4"
                 onClick={()=>{
-                  setCorrectQuizes([])
-                  setInCorrectQuizes([])
+                  setCorrectQuizzes([])
+                  setInCorrectQuizzes([])
                   setPoints(0)
                   setComplete(false)
                   setTimed(false)
@@ -69,7 +70,7 @@ useEffect(()=>{
           <Card className="w-full md:w-[850px] bg-white border-none mb-10 rounded-t-xl">
             <CardHeader>
               <CardDescription>Welcome
-                <span className="font-bold pl-2">{user?user.loggedIn?user.username:null:null}</span>
+                <span className="font-bold pl-2">{player?player.username:null}</span>
               </CardDescription>
               <CardTitle className="text-black text-center p-2 font-bold text-5xl">Quiz Me!</CardTitle>
             </CardHeader>
