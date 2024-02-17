@@ -1,13 +1,14 @@
 'use client'
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card"
-import { Input } from "./ui/input"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "./ui/form"
-import { Button } from "./ui/button"
-import { useQuizContext } from "@/lib/globalContext"
-import { useRef } from "react"
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { Input } from "./ui/input";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "./ui/form";
+import { Button } from "./ui/button";
+import { useQuizContext } from "@/lib/globalContext";
+import { useRef } from "react";
+import axios from 'axios';
 
 const usernameSchema = z.object({
     username: z.string().min(3, {
@@ -28,7 +29,13 @@ export const Modal = ()=>{
     const playerRef = useRef<any>(null);
 
     function onSubmit(values: z.infer<typeof usernameSchema>){
-        setPlayer({...player,username:values.username,loggedIn:true})
+        axios.post("https://misterh-api-server.onrender.com/api/quiz_player/new",{username:values.username}).then((response:any)=>{
+            console.log("username succsess")
+            setPlayer({...player,username:response.data.username,player_id:response.data._id})
+        }).catch((error:any)=>{
+            console.log(error)
+        })
+
     }
 
     return(
