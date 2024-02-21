@@ -3,13 +3,16 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 import { QuizContextProvider } from "@/lib/globalContext";
 import { Header } from "@/components/Header";
-const poppins = Poppins({subsets:["latin"],weight:["400","500","900"]})
+const poppins = Poppins({ subsets: ["latin"], weight: ["400", "500", "900"] });
 
 export const metadata: Metadata = {
-  title: "Qiuz me",
-  description: "Test your iq with a wide of quizzes",
-  authors:[{name:"Handsome Nyathi",url:"https://thehandsomedev.com"},{name:"misterh100",url:"https://github.com/MisterH100"}],
-  keywords:["Next.Js","React","Quiz","game","iq"]
+  title: "Quiz me",
+  description: "Test your iq with a wide range of quizzes",
+  authors: [
+    { name: "Handsome Nyathi", url: "https://thehandsomedev.com" },
+    { name: "misterh100", url: "https://github.com/MisterH100" },
+  ],
+  keywords: ["Next.Js", "React", "Quiz", "game", "iq"],
 };
 
 export default function RootLayout({
@@ -19,37 +22,34 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-       <head>
+      <head>
         <title>
-          <link 
-            rel="apple-touch-icon" 
-            sizes="180x180" 
+          <link
+            rel="apple-touch-icon"
+            sizes="180x180"
             href="/apple-touch-icon.png"
           />
-          <link 
-            rel="icon" 
-            type="image/png" 
-            sizes="32x32" 
+          <link
+            rel="icon"
+            type="image/png"
+            sizes="32x32"
             href="/favicon-32x32.png"
           />
-          <link 
-            rel="icon" 
-            type="image/png" 
-            sizes="16x16" 
+          <link
+            rel="icon"
+            type="image/png"
+            sizes="16x16"
             href="/favicon-16x16.png"
           />
-          <link 
-            rel="manifest" 
-            href="/site.webmanifest"
-          />
+          <link rel="manifest" href="/site.webmanifest" />
         </title>
-       </head>
-        <QuizContextProvider>
-          <body className={`${poppins.className} gradient_bg relative`}>
-            <Header/>
-            {children}
-          </body>
-        </QuizContextProvider>
+      </head>
+      <QuizContextProvider>
+        <body className={`${poppins.className} gradient_bg relative`}>
+          <Header />
+          {children}
+        </body>
+      </QuizContextProvider>
     </html>
   );
 }
