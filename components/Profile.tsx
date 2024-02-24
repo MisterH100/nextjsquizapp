@@ -9,10 +9,9 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { IQuiz, useQuizContext } from "@/lib/globalContext";
-
 import { useRef, useState } from "react";
 import { Button } from "./ui/button";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 interface IProfileProps {
   username: string;
@@ -22,6 +21,7 @@ interface IProfileProps {
   rank: number;
 }
 export const ProfileCard = (props: IProfileProps) => {
+  const router = useRouter();
   const { player } = useQuizContext();
   const tokenRef = useRef<HTMLParagraphElement>(null);
   const [copied, setCopied] = useState(false);
@@ -29,7 +29,10 @@ export const ProfileCard = (props: IProfileProps) => {
   return (
     <Card className="bg-white mt-40 w-full md:w-3/4">
       <CardHeader className="flex-row justify-between items-center">
-        Profile <Link href="/">back</Link>
+        <span className="text-2xl">Profile</span>
+        <Button variant={"outline"} onClick={() => router.push("/")}>
+          close
+        </Button>
       </CardHeader>
       <CardContent>
         <CardTitle>Info</CardTitle>

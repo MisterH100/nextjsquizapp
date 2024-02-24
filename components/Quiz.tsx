@@ -85,7 +85,7 @@ export const Quiz = (props: IQuizProps) => {
       )}
       <CardContent className="p-0">
         {done ? (
-          <Card className="flex flex-col items-center border-none w-full md:w-[500px] overflow-hidden">
+          <Card className="text-white flex flex-col items-center border-none w-full md:w-[500px] overflow-hidden">
             <CardHeader>
               <CardTitle>Done!</CardTitle>
             </CardHeader>
@@ -103,7 +103,7 @@ export const Quiz = (props: IQuizProps) => {
                   <li key={index} className="w-full cursor-pointer">
                     <div>
                       <button
-                        className="text-left w-full border border-blue-800 p-2  active:bg-blue-800 rounded"
+                        className="text-left w-full border border-blue-800 p-2  active:bg-blue-800 active:text-white rounded"
                         value={ans.name}
                         onClick={(e) => {
                           e.preventDefault();

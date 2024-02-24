@@ -26,6 +26,8 @@ interface IBannerProps {
 }
 export const StatsBanner = (props: IBannerProps) => {
   const router = useRouter();
+  const totalQuizzes =
+    props.correctQuizzes.length + props.incorrectQuizzes.length;
   return (
     <div className="flex justify-center pt-40">
       <Card className="w-full sm:w-[500px] md:w-[850px] bg-white border-none mb-10 mx-auto rounded-t-xl">
@@ -34,7 +36,7 @@ export const StatsBanner = (props: IBannerProps) => {
             <Link href="/stats">{props.username}</Link>
           </CardTitle>
         </CardHeader>
-        {props.points != 0 ? (
+        {props.points != 0 && totalQuizzes != 0 ? (
           <>
             <CardContent className="p-0"></CardContent>
             <CardContent>

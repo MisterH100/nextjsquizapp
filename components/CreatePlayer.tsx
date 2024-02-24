@@ -16,8 +16,6 @@ import {
 import { Button } from "./ui/button";
 import { useQuizContext } from "@/lib/globalContext";
 import axios from "axios";
-import { Loading } from "./Loading";
-import { ErrorModal } from "./Error";
 import Link from "next/link";
 
 const usernameSchema = z.object({
@@ -34,6 +32,7 @@ const usernameSchema = z.object({
 export const Modal = () => {
   const {
     username,
+    loading,
     setUsername,
     setPlayer,
     setLoading,
@@ -46,7 +45,6 @@ export const Modal = () => {
       username: "",
     },
   });
-
   async function onSubmit(values: z.infer<typeof usernameSchema>) {
     setLoadingMessage("Creating player...");
     setLoading(true);
@@ -104,9 +102,10 @@ export const Modal = () => {
                 <Button
                   type="submit"
                   variant="outline"
+                  disabled={loading}
                   className="bg-black text-white hover:text-black"
                 >
-                  Create
+                  {loading ? "creating..." : "create"}
                 </Button>
                 <Button
                   type="button"
