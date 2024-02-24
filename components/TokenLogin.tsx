@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Input } from "./ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
 import { z } from "zod";
 import {
   Form,
@@ -16,62 +17,58 @@ import {
 import { Button } from "./ui/button";
 import { useQuizContext } from "@/lib/globalContext";
 import axios from "axios";
-import { Loading } from "./Loading";
-import { ErrorModal } from "./Error";
-import Link from "next/link";
 
 const usernameSchema = z.object({
-  username: z
+  token: z
     .string()
-    .min(3, {
-      message: "Username must be at least 3 characters.",
+    .min(100, {
+      message: "Invalid token",
     })
-    .max(20, {
-      message: "Username must be less than 20 characters",
+    .max(200, {
+      message: "Invalid token",
     }),
 });
 
-export const Modal = () => {
+export const TokenLogin = () => {
+  const router = useRouter();
   const {
-    username,
     setUsername,
     setPlayer,
     setLoading,
     setLoadingMessage,
     setErrorMessage,
+    loading,
   } = useQuizContext();
+
   const form = useForm<z.infer<typeof usernameSchema>>({
     resolver: zodResolver(usernameSchema),
     defaultValues: {
-      username: "",
+      token: "",
     },
   });
 
   async function onSubmit(values: z.infer<typeof usernameSchema>) {
-    setLoadingMessage("Creating player...");
+    setLoadingMessage("validating token...");
     setLoading(true);
     await axios
-      .post("https://misterh-api-server.onrender.com/api/quiz_player/new", {
-        username: values.username,
-      })
-      .then((response) => {
-        axios
-          .get(
-            `https://misterh-api-server.onrender.com/api/quiz_player/player/${response.data._id}`
-          )
-          .then((response: any) => {
-            setPlayer({ token: response.data.token });
-            setUsername(response.data.username);
-            setLoading(false);
-          })
-          .catch((error: any) => {
-            setErrorMessage(error.message);
-            setLoading(false);
-          });
+      .post(
+        `https://misterh-api-server.onrender.com/api/quiz_player/auth`,
+        { username: null },
+        {
+          headers: {
+            "quiz-token": values.token,
+          },
+        }
+      )
+      .then((response: any) => {
+        setUsername(response.data.details.username);
+        setPlayer({ token: values.token });
+        setLoading(false);
+        router.push("/");
       })
       .catch((error: any) => {
-        setErrorMessage(error.message);
         setLoading(false);
+        setErrorMessage(error.message);
       });
   }
 
@@ -79,22 +76,22 @@ export const Modal = () => {
     <div className="fixed w-full h-screen flex justify-center items-center bg-black bg-opacity-20">
       <Card className="w-full md:w-[500px] bg-white">
         <CardHeader>
-          <CardTitle>Create your username</CardTitle>
+          <CardTitle>Login with token</CardTitle>
         </CardHeader>
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
               <FormField
                 control={form.control}
-                name="username"
+                name="token"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Username</FormLabel>
+                    <FormLabel>Token</FormLabel>
                     <FormControl>
-                      <Input placeholder="eg: the_quiz_lord" {...field} />
+                      <Input placeholder="" {...field} />
                     </FormControl>
                     <FormDescription>
-                      This is your display name.
+                      paste a valid token in the field
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -104,28 +101,11 @@ export const Modal = () => {
                 <Button
                   type="submit"
                   variant="outline"
+                  disabled={loading}
                   className="bg-black text-white hover:text-black"
                 >
-                  Create
+                  {loading ? "validating token..." : "login"}
                 </Button>
-                <Button
-                  type="button"
-                  onClick={() =>
-                    form.setValue(
-                      "username",
-                      "player" + (Date.now() + Math.random()).toString(36)
-                    )
-                  }
-                  variant="outline"
-                  className="bg-blue-600 text-white hover:text-black"
-                >
-                  Generate Random
-                </Button>
-              </div>
-              <div className="w-full text-center">
-                <Link className="w-full text-blue-800" href="/login">
-                  Log in with token
-                </Link>
               </div>
             </form>
           </Form>
