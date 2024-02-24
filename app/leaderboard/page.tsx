@@ -1,13 +1,17 @@
+"use client";
 import axios from "axios";
-import { useQuery } from "@tanstack/react-query";
 import { Leaderboard } from "@/components/Leaderboard";
 import { Loading } from "@/components/Loading";
 import { ErrorModal } from "@/components/Error";
+import { useQuery } from "@tanstack/react-query";
+import { useQuizContext } from "@/lib/globalContext";
 
 export default function LeaderboardPage() {
+  const { setLoadingMessage } = useQuizContext();
   const leaderBoardData = useQuery({
     queryKey: ["leaderboard"],
     queryFn: async () => {
+      setLoadingMessage("Updating leader board...");
       const data: any = await axios.get(
         "https://misterh-api-server.onrender.com/api/quiz_player/players/points"
       );

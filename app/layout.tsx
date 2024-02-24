@@ -3,6 +3,7 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 import { QuizContextProvider } from "@/lib/globalContext";
 import { Header } from "@/components/Header";
+import { Modal } from "@/components/CreatePlayer";
 const poppins = Poppins({ subsets: ["latin"], weight: ["400", "500", "900"] });
 
 export const metadata: Metadata = {

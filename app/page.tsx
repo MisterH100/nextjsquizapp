@@ -1,33 +1,19 @@
 "use client";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { useQuizContext } from "@/lib/globalContext";
-import { useRouter } from "next/navigation";
-import Image from "next/image";
-import stopWatch from "@/public/stopwatch.svg";
-import calmFace from "@/public/calmface.svg";
-import { Modal } from "@/components/CreatePlayer";
 import { StatsBanner } from "@/components/StatsBanner";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import { Loading } from "@/components/Loading";
 import { ErrorModal } from "@/components/Error";
 import { PlayCards } from "@/components/PlayCards";
-import { useEffect } from "react";
+import { Modal } from "@/components/CreatePlayer";
+import { useEffect, useState } from "react";
 
 export default function Home() {
-  const router = useRouter();
   const {
     username,
     player,
     rank,
-    complete,
     points,
     correctQuizzes,
     incorrectQuizzes,
@@ -37,17 +23,14 @@ export default function Home() {
     setIncorrectQuizzes,
     setPoints,
     setUsername,
-    setLoadingMessage,
-    setLoading,
     authPlayer,
+    setLoadingMessage,
   } = useQuizContext();
-  const playerToken = player.token;
-
+  const [usernameModal, setUsernameModal] = useState(false);
   const playerStats = useQuery({
-    queryKey: ["playerStats", playerToken],
+    queryKey: ["playerStats", username],
     queryFn: async () => {
-      setLoadingMessage("Updating player stats...");
-      setLoading(true);
+      setLoadingMessage("Loading player stats...");
       const data: any = await axios.post(
         `https://misterh-api-server.onrender.com/api/quiz_player/auth`,
         { username: null },
@@ -68,13 +51,21 @@ export default function Home() {
         )
         .then((response: any) => {
           setRank(response.data.rank);
-          setLoading(false);
         });
 
       return data;
     },
-    enabled: !!playerToken,
+    enabled: !!username,
   });
+
+  useEffect(() => {
+    if (!username) {
+      setUsernameModal(true);
+      authPlayer();
+    } else {
+      setUsernameModal(false);
+    }
+  }, [username]);
 
   if (playerStats.isLoading) {
     return <Loading />;
@@ -83,12 +74,9 @@ export default function Home() {
     return <ErrorModal />;
   }
 
-  useEffect(() => {
-    authPlayer();
-  }, []);
   return (
     <div>
-      {!username && <Modal />}
+      {usernameModal && <Modal />}
       <StatsBanner
         username={username}
         points={points}

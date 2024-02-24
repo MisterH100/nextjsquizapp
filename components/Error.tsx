@@ -5,7 +5,7 @@ import { Button } from "./ui/button";
 export const ErrorModal = () => {
   const { errorMessage } = useQuizContext();
   return (
-    <div className="z-[100] fixed top-0 left-0 w-full h-screen flex justify-center items-center bg-black bg-opacity-20">
+    <div className="w-full h-screen flex justify-center items-center bg-black bg-opacity-20">
       <Card className="w-full md:w-[500px] h-[300px] bg-white flex items-center flex-col">
         <CardHeader>An error occurred</CardHeader>
         <CardContent>

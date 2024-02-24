@@ -45,37 +45,35 @@ export const Leaderboard = (props: ILeaderboardProps) => {
     setMonth(new Date(Date.now()).getMonth());
   }, []);
   return (
-    <div className="z-[100] fixed top-0 left-0 w-full h-screen flex justify-center  bg-black bg-opacity-20">
-      <div className="w-full md:w-1/2 h-screen bg-white pt-10 overflow-y-auto">
-        <div className="flex items-center justify-between px-4 pb-4">
-          <h1 className="text-2xl">Leader board</h1>
-          <Button variant={"outline"} onClick={() => router.push("/")}>
-            close
-          </Button>
-        </div>
-        <Table className="bg-white h-fit">
-          <TableCaption className="bg-white mt-0">
-            Leader board as of
-            <br /> {date} {months[month]} {new Date(Date.now()).getFullYear()}
-          </TableCaption>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="min-w-[100px]">Player</TableHead>
-              <TableHead className="min-w-[100px] text-right">Points</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {props.leaderboardArray.map((player, index) => (
-              <TableRow key={index}>
-                <TableCell>
-                  {index + 1}. {player.username} {rank == index + 1 && "(you)"}
-                </TableCell>
-                <TableCell className="text-right">{player.points}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+    <div className="w-full h-screen bg-white pt-40 overflow-y-auto">
+      <div className="flex items-center justify-between px-4 pb-4">
+        <h1 className="text-2xl">Leader board</h1>
+        <Button variant={"outline"} onClick={() => router.push("/")}>
+          close
+        </Button>
       </div>
+      <Table className="bg-white h-fit">
+        <TableCaption className="bg-white mt-0">
+          Leader board as of
+          <br /> {date} {months[month]} {new Date(Date.now()).getFullYear()}
+        </TableCaption>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="min-w-[100px]">Player</TableHead>
+            <TableHead className="min-w-[100px] text-right">Points</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {props.leaderboardArray.map((player, index) => (
+            <TableRow key={index}>
+              <TableCell>
+                {index + 1}. {player.username} {rank == index + 1 && "(you)"}
+              </TableCell>
+              <TableCell className="text-right">{player.points}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
     </div>
   );
 };

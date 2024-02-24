@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -33,11 +34,10 @@ export const StatsBanner = (props: IBannerProps) => {
             <Link href="/stats">{props.username}</Link>
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          {props.points != 0 ||
-          props.correctQuizzes.length != 0 ||
-          props.incorrectQuizzes.length != 0 ? (
-            <>
+        {props.points != 0 ? (
+          <>
+            <CardContent className="p-0"></CardContent>
+            <CardContent>
               <CardTitle className="text-lg truncate font-normal">
                 Stats
               </CardTitle>
@@ -103,13 +103,15 @@ export const StatsBanner = (props: IBannerProps) => {
                   </div>
                 </div>
               </div>
-            </>
-          ) : (
-            <CardTitle className="text-3xl w-full text-center">
+            </CardContent>
+          </>
+        ) : (
+          <CardHeader>
+            <CardTitle className="w-full text-center text-2xl">
               Quiz me!!
             </CardTitle>
-          )}
-        </CardContent>
+          </CardHeader>
+        )}
       </Card>
     </div>
   );

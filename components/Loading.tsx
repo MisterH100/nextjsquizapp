@@ -6,7 +6,7 @@ import loading_squares from "@/public/loadingsquares.svg";
 export const Loading = () => {
   const { loadingMessage } = useQuizContext();
   return (
-    <div className="z-[100] fixed top-0 left-0 w-full h-screen flex justify-center items-center bg-black bg-opacity-20">
+    <div className="w-full h-screen flex justify-center items-center bg-black bg-opacity-20">
       <Card className="w-full md:w-[500px] bg-white flex items-center flex-col">
         <CardHeader>{loadingMessage}</CardHeader>
         <Image

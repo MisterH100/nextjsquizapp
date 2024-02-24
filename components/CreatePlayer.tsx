@@ -33,8 +33,8 @@ const usernameSchema = z.object({
 
 export const Modal = () => {
   const {
-    loading,
-    errorMessage,
+    username,
+    setUsername,
     setPlayer,
     setLoading,
     setLoadingMessage,
@@ -61,6 +61,7 @@ export const Modal = () => {
           )
           .then((response: any) => {
             setPlayer({ token: response.data.token });
+            setUsername(response.data.username);
             setLoading(false);
           })
           .catch((error: any) => {
@@ -76,8 +77,6 @@ export const Modal = () => {
 
   return (
     <div className="fixed w-full h-screen flex justify-center items-center bg-black bg-opacity-20">
-      {loading && <Loading />}
-      {errorMessage && <ErrorModal />}
       <Card className="w-full md:w-[500px] bg-white">
         <CardHeader>
           <CardTitle>Create your username</CardTitle>

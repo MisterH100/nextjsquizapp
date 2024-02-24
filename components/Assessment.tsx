@@ -7,20 +7,17 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useQuizContext } from "@/lib/globalContext";
+import { IQuiz } from "@/lib/globalContext";
 import Link from "next/link";
 
-export const Assessment = () => {
-  const {
-    currCorrectQuizzes,
-    currIncorrectQuizzes,
-    correctQuizzes,
-    incorrectQuizzes,
-    points,
-  } = useQuizContext();
-  const currTotalQuizzes =
-    currCorrectQuizzes.length + currIncorrectQuizzes.length;
-
+interface IAssesmentProps {
+  currCorrectQuizzes: IQuiz[];
+  currIncorrectQuizzes: IQuiz[];
+  correctQuizzes: IQuiz[];
+  incorrectQuizzes: IQuiz[];
+  points: number;
+}
+export const Assessment = (props: IAssesmentProps) => {
   return (
     <div className="w-full text-black">
       <div className="flex gap-4 flex-col items-center md:flex-row">
@@ -28,15 +25,15 @@ export const Assessment = () => {
           <CardHeader>
             <CardTitle className="">Correct</CardTitle>
             <CardDescription>
-              {currCorrectQuizzes.length > 0
-                ? currCorrectQuizzes.length
-                : correctQuizzes.length}
+              {props.currCorrectQuizzes.length > 0
+                ? props.currCorrectQuizzes.length
+                : props.correctQuizzes.length}
             </CardDescription>
           </CardHeader>
           <CardContent>
-            {currCorrectQuizzes.length > 0 ? (
+            {props.currCorrectQuizzes.length > 0 ? (
               <ScrollArea className="h-48 rounded-md border">
-                {currCorrectQuizzes.map((correctQ, index) => (
+                {props.currCorrectQuizzes.map((correctQ, index) => (
                   <div
                     key={index}
                     className="w-full border border-gray-600 p-2 mb-2 text-base font-normal"
@@ -52,7 +49,7 @@ export const Assessment = () => {
               </ScrollArea>
             ) : null}
           </CardContent>
-          {currCorrectQuizzes.length == 0 && (
+          {props.currCorrectQuizzes.length == 0 && (
             <CardFooter className="pt-0 text-red-500">
               •excluding bonus quiz
             </CardFooter>
@@ -62,15 +59,15 @@ export const Assessment = () => {
           <CardHeader>
             <CardTitle>Incorrect</CardTitle>
             <CardDescription>
-              {currIncorrectQuizzes.length > 0
-                ? currIncorrectQuizzes.length
-                : incorrectQuizzes.length}
+              {props.currIncorrectQuizzes.length > 0
+                ? props.currIncorrectQuizzes.length
+                : props.incorrectQuizzes.length}
             </CardDescription>
           </CardHeader>
           <CardContent>
-            {currIncorrectQuizzes.length > 0 ? (
+            {props.currIncorrectQuizzes.length > 0 ? (
               <ScrollArea className="h-48 rounded-md border">
-                {currIncorrectQuizzes.map((incorrectQ, index) => (
+                {props.currIncorrectQuizzes.map((incorrectQ, index) => (
                   <div
                     key={index}
                     className="w-full border border-gray-600 p-2 mb-2 text-base font-normal"
@@ -89,16 +86,16 @@ export const Assessment = () => {
               </ScrollArea>
             ) : null}
           </CardContent>
-          {currIncorrectQuizzes.length == 0 && (
+          {props.currIncorrectQuizzes.length == 0 && (
             <CardFooter className="pt-0 text-red-500">
               •excluding bonus quiz
             </CardFooter>
           )}
         </Card>
       </div>
-      {currTotalQuizzes != 0 ? (
+      {props.currCorrectQuizzes.length != 0 ? (
         <div className="w-full bg-blue-800 p-2 mt-4 text-white font-bold text-5xl text-center rounded-b-xl">
-          <p>Points: {points}</p>
+          <p>Points: {props.points}</p>
         </div>
       ) : (
         <div className="w-full bg-white p-10 mt-4 font-bold text-5xl text-center rounded-b-xl"></div>

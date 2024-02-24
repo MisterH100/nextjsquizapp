@@ -4,6 +4,7 @@ import {
   SetStateAction,
   createContext,
   useContext,
+  useEffect,
   useState,
 } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -41,7 +42,6 @@ interface contextProps {
   setLoading: Dispatch<SetStateAction<boolean>>;
   setTimed: Dispatch<SetStateAction<boolean>>;
   authPlayer: () => void;
-  getUsername: () => void;
   updateData: () => void;
 }
 export interface IAnswers {
@@ -87,8 +87,6 @@ export const QuizContextProvider = ({
 
   const authPlayer = async () => {
     if (player.token) {
-      setLoadingMessage("Authenticating player...");
-      setLoading(true);
       await axios
         .post(
           `https://misterh-api-server.onrender.com/api/quiz_player/auth`,
@@ -101,34 +99,8 @@ export const QuizContextProvider = ({
         )
         .then((response: any) => {
           setComplete(response.data.details.completed);
-          setLoading(false);
-        })
-        .catch((error: any) => {
-          setLoading(false);
-          setErrorMessage(error.message);
-        });
-    }
-  };
-
-  const getUsername = async () => {
-    if (player.token) {
-      setLoadingMessage("Authenticating player...");
-      setLoading(true);
-      axios
-        .post(
-          `https://misterh-api-server.onrender.com/api/quiz_player/auth`,
-          { username: null },
-          {
-            headers: {
-              "quiz-token": player.token,
-            },
-          }
-        )
-        .then((response: any) => {
           setUsername(response.data.details.username);
-          setTimeout(() => {
-            setLoading(false);
-          }, 1000);
+          setLoading(false);
         })
         .catch((error: any) => {
           setLoading(false);
@@ -139,8 +111,6 @@ export const QuizContextProvider = ({
 
   const updateData = () => {
     if (player.token) {
-      setLoadingMessage("Authenticating player...");
-      setLoading(true);
       axios
         .post(
           `https://misterh-api-server.onrender.com/api/quiz_player/auth`,
@@ -152,7 +122,6 @@ export const QuizContextProvider = ({
           }
         )
         .then((response: any) => {
-          setLoadingMessage("Updating data...");
           axios
             .put(
               `https://misterh-api-server.onrender.com/api/quiz_player/update/${response.data.details._id}`,
@@ -166,12 +135,10 @@ export const QuizContextProvider = ({
               setLoading(false);
             })
             .catch((error: any) => {
-              setLoading(false);
               setErrorMessage(error.message);
             });
         })
         .catch((error: any) => {
-          setLoading(false);
           setErrorMessage(error.message);
         });
     }
@@ -196,7 +163,6 @@ export const QuizContextProvider = ({
         setCurrCorrectQuizzes,
         currIncorrectQuizzes,
         setCurrIncorrectQuizzes,
-        getUsername,
         complete,
         setComplete,
         timed,
