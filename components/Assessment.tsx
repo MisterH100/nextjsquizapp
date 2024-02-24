@@ -15,9 +15,8 @@ export const Assessment = () => {
     currCorrectQuizzes,
     currIncorrectQuizzes,
     correctQuizzes,
-    inCorrectQuizzes,
+    incorrectQuizzes,
     points,
-    loading,
   } = useQuizContext();
   const currTotalQuizzes =
     currCorrectQuizzes.length + currIncorrectQuizzes.length;
@@ -65,7 +64,7 @@ export const Assessment = () => {
             <CardDescription>
               {currIncorrectQuizzes.length > 0
                 ? currIncorrectQuizzes.length
-                : inCorrectQuizzes.length}
+                : incorrectQuizzes.length}
             </CardDescription>
           </CardHeader>
           <CardContent>

@@ -18,6 +18,7 @@ import { useQuizContext } from "@/lib/globalContext";
 import axios from "axios";
 import { Loading } from "./Loading";
 import { ErrorModal } from "./Error";
+import Link from "next/link";
 
 const usernameSchema = z.object({
   username: z
@@ -32,12 +33,12 @@ const usernameSchema = z.object({
 
 export const Modal = () => {
   const {
+    loading,
+    errorMessage,
     setPlayer,
     setLoading,
-    loading,
     setLoadingMessage,
     setErrorMessage,
-    errorMessage,
   } = useQuizContext();
   const form = useForm<z.infer<typeof usernameSchema>>({
     resolver: zodResolver(usernameSchema),
@@ -75,63 +76,62 @@ export const Modal = () => {
 
   return (
     <div className="fixed w-full h-screen flex justify-center items-center bg-black bg-opacity-20">
+      {loading && <Loading />}
       {errorMessage && <ErrorModal />}
-      {loading ? (
-        <Loading />
-      ) : (
-        <Card className="w-full md:w-[500px] bg-white">
-          <CardHeader>
-            <CardTitle>Create your username</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-8"
-              >
-                <FormField
-                  control={form.control}
-                  name="username"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Username</FormLabel>
-                      <FormControl>
-                        <Input placeholder="eg: the_quiz_lord" {...field} />
-                      </FormControl>
-                      <FormDescription>
-                        This is your display name.
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <div className="w-full flex justify-between">
-                  <Button
-                    type="submit"
-                    variant="outline"
-                    className="bg-black text-white hover:text-black"
-                  >
-                    Create
-                  </Button>
-                  <Button
-                    type="button"
-                    onClick={() =>
-                      form.setValue(
-                        "username",
-                        "player" + (Date.now() + Math.random()).toString(36)
-                      )
-                    }
-                    variant="outline"
-                    className="bg-blue-600 text-white hover:text-black"
-                  >
-                    Generate Random
-                  </Button>
-                </div>
-              </form>
-            </Form>
-          </CardContent>
-        </Card>
-      )}
+      <Card className="w-full md:w-[500px] bg-white">
+        <CardHeader>
+          <CardTitle>Create your username</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+              <FormField
+                control={form.control}
+                name="username"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Username</FormLabel>
+                    <FormControl>
+                      <Input placeholder="eg: the_quiz_lord" {...field} />
+                    </FormControl>
+                    <FormDescription>
+                      This is your display name.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div className="w-full flex justify-between">
+                <Button
+                  type="submit"
+                  variant="outline"
+                  className="bg-black text-white hover:text-black"
+                >
+                  Create
+                </Button>
+                <Button
+                  type="button"
+                  onClick={() =>
+                    form.setValue(
+                      "username",
+                      "player" + (Date.now() + Math.random()).toString(36)
+                    )
+                  }
+                  variant="outline"
+                  className="bg-blue-600 text-white hover:text-black"
+                >
+                  Generate Random
+                </Button>
+              </div>
+              <div className="w-full text-center">
+                <Link className="w-full text-blue-800" href="/">
+                  Log in with token
+                </Link>
+              </div>
+            </form>
+          </Form>
+        </CardContent>
+      </Card>
     </div>
   );
 };

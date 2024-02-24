@@ -47,8 +47,10 @@ export default function RootLayout({
       </head>
       <QuizContextProvider>
         <body className={`${poppins.className} gradient_bg relative`}>
-          <Header />
-          {children}
+          <main className="min-h-screen">
+            <Header />
+            {children}
+          </main>
         </body>
       </QuizContextProvider>
     </html>

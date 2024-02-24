@@ -6,89 +6,37 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useQuizContext } from "@/lib/globalContext";
+import { IQuiz } from "@/lib/globalContext";
 import Image from "next/image";
 import pointsIcon from "@/public/points.svg";
 import correctIcon from "@/public/correct.svg";
 import incorrectIcon from "@/public/incorrect.svg";
 import rankingIcon from "@/public/ranking.svg";
 import { Separator } from "@/components/ui/separator";
-import { useQuery } from "@tanstack/react-query";
-
+import { useRouter } from "next/navigation";
 import Link from "next/link";
-import axios from "axios";
-import { ErrorModal } from "./Error";
-import { Loading } from "./Loading";
 
-export const StatsBanner = () => {
-  const {
-    player,
-    rank,
-    setRank,
-    username,
-    showLeaderboard,
-    setShowLeaderboard,
-    setComplete,
-    setCorrectQuizzes,
-    setInCorrectQuizzes,
-    setPoints,
-    setUsername,
-    setLoadingMessage,
-    setLoading,
-    points,
-    correctQuizzes,
-    inCorrectQuizzes,
-    errorMessage,
-  } = useQuizContext();
-
-  const playerToken = player.token;
-
-  const playerStats = useQuery({
-    queryKey: ["playerStats", playerToken],
-    queryFn: async () => {
-      setLoadingMessage("Updating player stats...");
-      setLoading(true);
-      const data: any = await axios.post(
-        `https://misterh-api-server.onrender.com/api/quiz_player/auth`,
-        { username: null },
-        {
-          headers: {
-            "quiz-token": player.token,
-          },
-        }
-      );
-      setPoints(data.data.details.points);
-      setCorrectQuizzes(data.data.details.correctQuizzes);
-      setInCorrectQuizzes(data.data.details.incorrectQuizzes);
-      setComplete(data.data.details.completed);
-      setUsername(data.data.details.username);
-      axios
-        .get(
-          `https://misterh-api-server.onrender.com/api/quiz_player/rank/${data.data.details._id}`
-        )
-        .then((response) => {
-          setRank(response.data.rank);
-          setLoading(false);
-        });
-
-      return data;
-    },
-    enabled: !!playerToken,
-  });
-
+interface IBannerProps {
+  username: string;
+  points: number;
+  correctQuizzes: IQuiz[];
+  incorrectQuizzes: IQuiz[];
+  rank: number;
+}
+export const StatsBanner = (props: IBannerProps) => {
+  const router = useRouter();
   return (
     <div className="flex justify-center pt-40">
-      {errorMessage && <ErrorModal />}
       <Card className="w-full sm:w-[500px] md:w-[850px] bg-white border-none mb-10 mx-auto rounded-t-xl">
         <CardHeader>
           <CardTitle className="text-xl truncate">
-            <Link href="/stats">{username}</Link>
+            <Link href="/stats">{props.username}</Link>
           </CardTitle>
         </CardHeader>
         <CardContent>
-          {points != 0 ||
-          correctQuizzes.length != 0 ||
-          inCorrectQuizzes.length != 0 ? (
+          {props.points != 0 ||
+          props.correctQuizzes.length != 0 ||
+          props.incorrectQuizzes.length != 0 ? (
             <>
               <CardTitle className="text-lg truncate font-normal">
                 Stats
@@ -105,12 +53,12 @@ export const StatsBanner = () => {
                       height={14}
                       priority
                     />{" "}
-                    Points: <span className="font-bold">{points}</span>
+                    Points: <span className="font-bold">{props.points}</span>
                   </div>
                   <div>
                     <Button
                       className="flex items-center gap-2 bg-blue-800 rounded text-white hover:bg-blue-800"
-                      onClick={() => setShowLeaderboard(!showLeaderboard)}
+                      onClick={() => router.push("/leaderboard")}
                     >
                       <Image
                         src={rankingIcon}
@@ -120,10 +68,7 @@ export const StatsBanner = () => {
                         height={20}
                         priority
                       />
-                      Rank:{" "}
-                      <span className="font-medium">
-                        {points == 0 ? null : rank}
-                      </span>
+                      Rank: <span className="font-medium">{props.rank}</span>
                     </Button>
                   </div>
                 </div>
@@ -138,7 +83,9 @@ export const StatsBanner = () => {
                       priority
                     />
                     Correct quizzes:{" "}
-                    <span className="font-normal">{correctQuizzes.length}</span>
+                    <span className="font-normal">
+                      {props.correctQuizzes.length}
+                    </span>
                   </div>
                   <div className="flex items-center font-normal text-sm gap-2 pt-2">
                     <Image
@@ -151,7 +98,7 @@ export const StatsBanner = () => {
                     />{" "}
                     Incorrect Quizzes:{" "}
                     <span className="font-normal">
-                      {inCorrectQuizzes.length}
+                      {props.incorrectQuizzes.length}
                     </span>
                   </div>
                 </div>

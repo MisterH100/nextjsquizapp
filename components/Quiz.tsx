@@ -11,38 +11,26 @@ import { IAnswers, IQuiz, useQuizContext } from "@/lib/globalContext";
 import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
-import Image from "next/image";
-import loading_squares from "@/public/loadingsquares.svg";
-import axios from "axios";
 
-export const Quiz = () => {
-  const quizData = useQuery({
-    queryKey: ["generalQuizzes"],
-    queryFn: async () => {
-      const data: any = await axios.get(
-        "https://misterh-api-server.onrender.com/api/general_quizzes"
-      );
-      return data;
-    },
-  });
-
+interface IQuizProps {
+  quizArray: IQuiz[];
+}
+export const Quiz = (props: IQuizProps) => {
+  const router = useRouter();
   const {
-    setCurrCorrectQuizzes,
-    setPoints,
-    setCurrIncorrectQuizzes,
+    timed,
     currCorrectQuizzes,
     currIncorrectQuizzes,
-    timed,
     setTimed,
-    authPlayer,
+    setPoints,
+    setCurrCorrectQuizzes,
+    setCurrIncorrectQuizzes,
     updateData,
   } = useQuizContext();
   const [currQuiz, setCurrQuiz] = useState(0);
   const [progress, setProgress] = useState(100);
-  const choices = ["A", "B", "C"];
-  const router = useRouter();
   const [done, setDone] = useState(false);
+  const choices = ["A", "B", "C"];
 
   useEffect(() => {
     if (timed) {
@@ -73,8 +61,8 @@ export const Quiz = () => {
     }
   };
   const nextQuiz = () => {
-    if (quizData.data) {
-      if (currQuiz >= quizData.data.data.length - 1) {
+    if (props.quizArray) {
+      if (currQuiz >= props.quizArray.length - 1) {
         setDone(!done);
         setCurrQuiz(0);
         setProgress(100);
@@ -87,35 +75,7 @@ export const Quiz = () => {
       }
     }
   };
-  if (quizData.isLoading) {
-    return (
-      <Card className="border-none w-full md:w-[500px] overflow-hidden">
-        <CardHeader>
-          <CardTitle>Loading quizzes..</CardTitle>
-        </CardHeader>
-        <CardContent className="w-full flex justify-center">
-          <Image
-            className="w-1/2 h-full object-contain"
-            src={loading_squares}
-            width={500}
-            height={300}
-            alt="LOADING"
-            priority
-          />
-        </CardContent>
-      </Card>
-    );
-  }
-  if (quizData.error) {
-    return (
-      <Card className="border-none w-full md:w-[500px] overflow-hidden">
-        <CardHeader>
-          <CardTitle>An error occurred while loading quizzes</CardTitle>
-        </CardHeader>
-        <CardContent>Error:{quizData.error.message}</CardContent>
-      </Card>
-    );
-  }
+
   return (
     <Card className="border-none w-full md:w-[500px] overflow-hidden">
       {timed && (
@@ -125,44 +85,40 @@ export const Quiz = () => {
       )}
       <CardContent className="p-0">
         {done ? (
-          <Card className="border-none w-full md:w-[500px] overflow-hidden">
+          <Card className="flex flex-col items-center border-none w-full md:w-[500px] overflow-hidden">
             <CardHeader>
               <CardTitle>Done!</CardTitle>
             </CardHeader>
             <CardContent>You have completed today's quizzes</CardContent>
           </Card>
         ) : (
-          quizData.data && (
-            <form
-              id={quizData.data.data[currQuiz].question}
-              className="w-full p-4 text-black bg-white"
-            >
-              <h1 className="text-lg">
-                Q: {quizData.data.data[currQuiz].question}
-              </h1>
-              <ul className="p-4 flex flex-col gap-4">
-                {quizData.data.data[currQuiz].answers?.map(
-                  (ans: IAnswers, index: number) => (
-                    <li key={index} className="w-full cursor-pointer">
-                      <div>
-                        <button
-                          className="text-left w-full border border-blue-800 p-2  active:bg-blue-800 rounded"
-                          value={ans.name}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            compareAns(quizData.data.data[currQuiz], ans.name);
-                            nextQuiz();
-                          }}
-                        >
-                          {choices[index]}: {ans.name}
-                        </button>
-                      </div>
-                    </li>
-                  )
-                )}
-              </ul>
-            </form>
-          )
+          <form
+            id={props.quizArray[currQuiz].question}
+            className="w-full p-4 text-black bg-white"
+          >
+            <h1 className="text-lg">Q: {props.quizArray[currQuiz].question}</h1>
+            <ul className="p-4 flex flex-col gap-4">
+              {props.quizArray[currQuiz].answers?.map(
+                (ans: IAnswers, index: number) => (
+                  <li key={index} className="w-full cursor-pointer">
+                    <div>
+                      <button
+                        className="text-left w-full border border-blue-800 p-2  active:bg-blue-800 rounded"
+                        value={ans.name}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          compareAns(props.quizArray[currQuiz], ans.name);
+                          nextQuiz();
+                        }}
+                      >
+                        {choices[index]}: {ans.name}
+                      </button>
+                    </div>
+                  </li>
+                )
+              )}
+            </ul>
+          </form>
         )}
       </CardContent>
       <CardFooter className="mt-4 p-0">

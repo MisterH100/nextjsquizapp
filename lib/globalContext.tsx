@@ -4,7 +4,6 @@ import {
   SetStateAction,
   createContext,
   useContext,
-  useEffect,
   useState,
 } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -23,8 +22,8 @@ interface contextProps {
   setPoints: Dispatch<SetStateAction<number>>;
   correctQuizzes: IQuiz[];
   setCorrectQuizzes: Dispatch<SetStateAction<IQuiz[]>>;
-  inCorrectQuizzes: IQuiz[];
-  setInCorrectQuizzes: Dispatch<SetStateAction<IQuiz[]>>;
+  incorrectQuizzes: IQuiz[];
+  setIncorrectQuizzes: Dispatch<SetStateAction<IQuiz[]>>;
   currCorrectQuizzes: IQuiz[];
   setCurrCorrectQuizzes: Dispatch<SetStateAction<IQuiz[]>>;
   currIncorrectQuizzes: IQuiz[];
@@ -39,8 +38,6 @@ interface contextProps {
   setLoadingMessage: Dispatch<SetStateAction<string>>;
   errorMessage: string;
   setErrorMessage: Dispatch<SetStateAction<string>>;
-  showLeaderboard: boolean;
-  setShowLeaderboard: Dispatch<SetStateAction<boolean>>;
   setLoading: Dispatch<SetStateAction<boolean>>;
   setTimed: Dispatch<SetStateAction<boolean>>;
   authPlayer: () => void;
@@ -78,14 +75,13 @@ export const QuizContextProvider = ({
   const [points, setPoints] = useState(0);
   const [rank, setRank] = useState(0);
   const [correctQuizzes, setCorrectQuizzes] = useState<IQuiz[]>([]);
-  const [inCorrectQuizzes, setInCorrectQuizzes] = useState<IQuiz[]>([]);
+  const [incorrectQuizzes, setIncorrectQuizzes] = useState<IQuiz[]>([]);
   const [currCorrectQuizzes, setCurrCorrectQuizzes] = useState<IQuiz[]>([]);
   const [currIncorrectQuizzes, setCurrIncorrectQuizzes] = useState<IQuiz[]>([]);
   const [complete, setComplete] = useState(false);
   const [timed, setTimed] = useState(false);
   const [expired, setExpired] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [loadingMessage, setLoadingMessage] = useState("");
 
@@ -194,8 +190,8 @@ export const QuizContextProvider = ({
         setPoints,
         correctQuizzes,
         setCorrectQuizzes,
-        inCorrectQuizzes,
-        setInCorrectQuizzes,
+        incorrectQuizzes,
+        setIncorrectQuizzes,
         currCorrectQuizzes,
         setCurrCorrectQuizzes,
         currIncorrectQuizzes,
@@ -207,10 +203,8 @@ export const QuizContextProvider = ({
         loading,
         loadingMessage,
         setLoadingMessage,
-        showLeaderboard,
         errorMessage,
         setErrorMessage,
-        setShowLeaderboard,
         setLoading,
         setTimed,
         authPlayer,
