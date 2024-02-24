@@ -1,10 +1,8 @@
 "use client";
-import loading_squares from "@/public/loadingsquares.svg";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Input } from "./ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import Image from "next/image";
 import { z } from "zod";
 import {
   Form,
@@ -17,9 +15,9 @@ import {
 } from "./ui/form";
 import { Button } from "./ui/button";
 import { useQuizContext } from "@/lib/globalContext";
-import { useRef, useState } from "react";
 import axios from "axios";
 import { Loading } from "./Loading";
+import { ErrorModal } from "./Error";
 
 const usernameSchema = z.object({
   username: z
@@ -33,37 +31,51 @@ const usernameSchema = z.object({
 });
 
 export const Modal = () => {
-  const { setPlayer, player, setLoading, loading } = useQuizContext();
+  const {
+    setPlayer,
+    setLoading,
+    loading,
+    setLoadingMessage,
+    setErrorMessage,
+    errorMessage,
+  } = useQuizContext();
   const form = useForm<z.infer<typeof usernameSchema>>({
     resolver: zodResolver(usernameSchema),
     defaultValues: {
       username: "",
     },
   });
-  const playerRef = useRef<any>(null);
 
-  function onSubmit(values: z.infer<typeof usernameSchema>) {
+  async function onSubmit(values: z.infer<typeof usernameSchema>) {
+    setLoadingMessage("Creating player...");
     setLoading(true);
-    axios
+    await axios
       .post("https://misterh-api-server.onrender.com/api/quiz_player/new", {
         username: values.username,
       })
-      .then((response: any) => {
-        setPlayer({
-          ...player,
-          player_id: response.data._id,
-        });
-        setTimeout(() => {
-          setLoading(false);
-        }, 1000);
+      .then((response) => {
+        axios
+          .get(
+            `https://misterh-api-server.onrender.com/api/quiz_player/player/${response.data._id}`
+          )
+          .then((response: any) => {
+            setPlayer({ token: response.data.token });
+            setLoading(false);
+          })
+          .catch((error: any) => {
+            setErrorMessage(error.message);
+            setLoading(false);
+          });
       })
       .catch((error: any) => {
-        console.log(error);
+        setErrorMessage(error.message);
+        setLoading(false);
       });
   }
 
   return (
     <div className="fixed w-full h-screen flex justify-center items-center bg-black bg-opacity-20">
+      {errorMessage && <ErrorModal />}
       {loading ? (
         <Loading />
       ) : (
@@ -84,11 +96,7 @@ export const Modal = () => {
                     <FormItem>
                       <FormLabel>Username</FormLabel>
                       <FormControl>
-                        <Input
-                          placeholder="eg: the_quiz_lord"
-                          {...field}
-                          ref={playerRef}
-                        />
+                        <Input placeholder="eg: the_quiz_lord" {...field} />
                       </FormControl>
                       <FormDescription>
                         This is your display name.
@@ -110,8 +118,7 @@ export const Modal = () => {
                     onClick={() =>
                       form.setValue(
                         "username",
-                        (playerRef.current.value =
-                          "player" + (Date.now() + Math.random()).toString(36))
+                        "player" + (Date.now() + Math.random()).toString(36)
                       )
                     }
                     variant="outline"

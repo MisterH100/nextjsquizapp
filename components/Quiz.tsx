@@ -12,26 +12,31 @@ import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
+import Image from "next/image";
+import loading_squares from "@/public/loadingsquares.svg";
+import axios from "axios";
 
 export const Quiz = () => {
-  const { isPending, error, data } = useQuery({
+  const quizData = useQuery({
     queryKey: ["generalQuizzes"],
-    queryFn: () =>
-      fetch("https://misterh-api-server.onrender.com/api/general_quizzes").then(
-        (res) => res.json()
-      ),
+    queryFn: async () => {
+      const data: any = await axios.get(
+        "https://misterh-api-server.onrender.com/api/general_quizzes"
+      );
+      return data;
+    },
   });
+
   const {
     setCurrCorrectQuizzes,
     setPoints,
     setCurrIncorrectQuizzes,
-    complete,
     currCorrectQuizzes,
     currIncorrectQuizzes,
     timed,
     setTimed,
-    updateData,
     authPlayer,
+    updateData,
   } = useQuizContext();
   const [currQuiz, setCurrQuiz] = useState(0);
   const [progress, setProgress] = useState(100);
@@ -40,18 +45,16 @@ export const Quiz = () => {
   const [done, setDone] = useState(false);
 
   useEffect(() => {
-    if (progress < 1 || progress == 0) {
-      nextQuiz();
+    if (timed) {
+      if (progress < 1 || progress == 0) {
+        nextQuiz();
+      }
+      const timer = setTimeout(() => {
+        setProgress((prev) => prev - 10);
+      }, 1000);
+      return () => clearTimeout(timer);
     }
-    const timer = setTimeout(() => {
-      setProgress((prev) => prev - 10);
-    }, 1000);
-    return () => clearTimeout(timer);
   }, [progress]);
-
-  useEffect(() => {
-    authPlayer();
-  }, []);
 
   const compareAns = (quiz: IQuiz, ans: string) => {
     if (quiz.correctAnswer == ans) {
@@ -70,35 +73,46 @@ export const Quiz = () => {
     }
   };
   const nextQuiz = () => {
-    if (currQuiz >= data.length - 1) {
-      setDone(!done);
-      setCurrQuiz(0);
-      updateData();
-      setProgress(100);
-      setTimed(false);
-      router.push("/assessment");
-    } else {
-      setCurrQuiz((prev) => prev + 1);
-      setProgress(100);
+    if (quizData.data) {
+      if (currQuiz >= quizData.data.data.length - 1) {
+        setDone(!done);
+        setCurrQuiz(0);
+        setProgress(100);
+        setTimed(false);
+        router.push("/assessment");
+        updateData();
+      } else {
+        setCurrQuiz((prev) => prev + 1);
+        setProgress(100);
+      }
     }
   };
-  if (isPending) {
+  if (quizData.isLoading) {
     return (
       <Card className="border-none w-full md:w-[500px] overflow-hidden">
         <CardHeader>
           <CardTitle>Loading quizzes..</CardTitle>
         </CardHeader>
-        <CardContent>Fetching latest quizzes.......</CardContent>
+        <CardContent className="w-full flex justify-center">
+          <Image
+            className="w-1/2 h-full object-contain"
+            src={loading_squares}
+            width={500}
+            height={300}
+            alt="LOADING"
+            priority
+          />
+        </CardContent>
       </Card>
     );
   }
-  if (error) {
+  if (quizData.error) {
     return (
       <Card className="border-none w-full md:w-[500px] overflow-hidden">
         <CardHeader>
           <CardTitle>An error occurred while loading quizzes</CardTitle>
         </CardHeader>
-        <CardContent>Error:{error.message}</CardContent>
+        <CardContent>Error:{quizData.error.message}</CardContent>
       </Card>
     );
   }
@@ -118,31 +132,37 @@ export const Quiz = () => {
             <CardContent>You have completed today's quizzes</CardContent>
           </Card>
         ) : (
-          <form
-            id={data[currQuiz].question}
-            className="w-full p-4 text-black bg-white"
-          >
-            <h1 className="text-lg">Q: {data[currQuiz].question}</h1>
-            <ul className="p-4 flex flex-col gap-4">
-              {data[currQuiz]?.answers?.map((ans: IAnswers, index: number) => (
-                <li key={index} className="w-full cursor-pointer">
-                  <div>
-                    <button
-                      className="text-left w-full border border-blue-800 p-2  active:bg-blue-800 rounded"
-                      value={ans.name}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        compareAns(data[currQuiz], ans.name);
-                        nextQuiz();
-                      }}
-                    >
-                      {choices[index]}: {ans.name}
-                    </button>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </form>
+          quizData.data && (
+            <form
+              id={quizData.data.data[currQuiz].question}
+              className="w-full p-4 text-black bg-white"
+            >
+              <h1 className="text-lg">
+                Q: {quizData.data.data[currQuiz].question}
+              </h1>
+              <ul className="p-4 flex flex-col gap-4">
+                {quizData.data.data[currQuiz].answers?.map(
+                  (ans: IAnswers, index: number) => (
+                    <li key={index} className="w-full cursor-pointer">
+                      <div>
+                        <button
+                          className="text-left w-full border border-blue-800 p-2  active:bg-blue-800 rounded"
+                          value={ans.name}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            compareAns(quizData.data.data[currQuiz], ans.name);
+                            nextQuiz();
+                          }}
+                        >
+                          {choices[index]}: {ans.name}
+                        </button>
+                      </div>
+                    </li>
+                  )
+                )}
+              </ul>
+            </form>
+          )
         )}
       </CardContent>
       <CardFooter className="mt-4 p-0">

@@ -2,11 +2,10 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Quiz me",
-  description:
-    "Test your knowledge, acquire as much points to be the highest in the leader board",
+  description: "Player info and stats",
 };
 
-export default function QuizLayout({
+export default function StatsLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;

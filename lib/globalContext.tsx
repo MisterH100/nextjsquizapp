@@ -7,22 +7,24 @@ import {
   useEffect,
   useState,
 } from "react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useLocalStorage } from "./usernameStorage";
 import axios from "axios";
+const queryClient = new QueryClient();
 
 interface contextProps {
   player: IPlayer;
   setPlayer: Dispatch<SetStateAction<IPlayer>>;
-  currPlayer: string;
-  setCurrPlayer: Dispatch<SetStateAction<string>>;
+  username: string;
+  setUsername: Dispatch<SetStateAction<string>>;
   points: number;
   rank: number;
+  setRank: Dispatch<SetStateAction<number>>;
   setPoints: Dispatch<SetStateAction<number>>;
   correctQuizzes: IQuiz[];
   setCorrectQuizzes: Dispatch<SetStateAction<IQuiz[]>>;
   inCorrectQuizzes: IQuiz[];
   setInCorrectQuizzes: Dispatch<SetStateAction<IQuiz[]>>;
-  getUsername: (setState: Dispatch<SetStateAction<string>>) => void;
   currCorrectQuizzes: IQuiz[];
   setCurrCorrectQuizzes: Dispatch<SetStateAction<IQuiz[]>>;
   currIncorrectQuizzes: IQuiz[];
@@ -33,14 +35,17 @@ interface contextProps {
   setComplete: Dispatch<SetStateAction<boolean>>;
   timed: boolean;
   loading: boolean;
+  loadingMessage: string;
+  setLoadingMessage: Dispatch<SetStateAction<string>>;
+  errorMessage: string;
+  setErrorMessage: Dispatch<SetStateAction<string>>;
   showLeaderboard: boolean;
   setShowLeaderboard: Dispatch<SetStateAction<boolean>>;
   setLoading: Dispatch<SetStateAction<boolean>>;
   setTimed: Dispatch<SetStateAction<boolean>>;
-  getTimeStamp: () => void;
-  updateData: () => void;
-  updateStats: () => void;
   authPlayer: () => void;
+  getUsername: () => void;
+  updateData: () => void;
 }
 export interface IAnswers {
   id: number;
@@ -56,7 +61,6 @@ export interface IQuiz {
   answer: string;
 }
 export interface IPlayer {
-  player_id: string;
   token: string;
 }
 const QuizContext = createContext<contextProps>({} as contextProps);
@@ -67,10 +71,10 @@ export const QuizContextProvider = ({
   children: React.ReactNode;
 }) => {
   const [player, setPlayer] = useLocalStorage<IPlayer>(
-    "quizPlayer",
+    "quiz_player",
     {} as IPlayer
   );
-  const [currPlayer, setCurrPlayer] = useState("");
+  const [username, setUsername] = useState("");
   const [points, setPoints] = useState(0);
   const [rank, setRank] = useState(0);
   const [correctQuizzes, setCorrectQuizzes] = useState<IQuiz[]>([]);
@@ -82,9 +86,12 @@ export const QuizContextProvider = ({
   const [expired, setExpired] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string>("");
+  const [loadingMessage, setLoadingMessage] = useState("");
 
-  const getTimeStamp = async () => {
+  const authPlayer = async () => {
     if (player.token) {
+      setLoadingMessage("Authenticating player...");
       setLoading(true);
       await axios
         .post(
@@ -97,35 +104,19 @@ export const QuizContextProvider = ({
           }
         )
         .then((response: any) => {
-          axios
-            .get(
-              `https://misterh-api-server.onrender.com/api/quiz_player/time_stamp/${response.data.details._id}`
-            )
-            .then((response: any) => {
-              const prevDate = new Date(response.data.timeStamp);
-              const currDate = new Date(Date.now());
-              if (
-                prevDate.getFullYear() === currDate.getFullYear() &&
-                prevDate.getMonth() === currDate.getMonth() &&
-                prevDate.getDate() === currDate.getDate()
-              ) {
-                setExpired(true);
-              }
-              setTimeout(() => {
-                setLoading(false);
-              }, 1000);
-            })
-            .catch((error: any) => {
-              console.log(error);
-            });
+          setComplete(response.data.details.completed);
+          setLoading(false);
         })
         .catch((error: any) => {
-          console.log(error);
+          setLoading(false);
+          setErrorMessage(error.message);
         });
     }
   };
-  const updateStats = () => {
+
+  const getUsername = async () => {
     if (player.token) {
+      setLoadingMessage("Authenticating player...");
       setLoading(true);
       axios
         .post(
@@ -138,34 +129,23 @@ export const QuizContextProvider = ({
           }
         )
         .then((response: any) => {
-          setPoints(response.data.details.points);
-          setCorrectQuizzes(response.data.details.correctQuizzes);
-          setInCorrectQuizzes(response.data.details.incorrectQuizzes);
-          setComplete(response.data.details.completed);
-          setCurrPlayer(response.data.details.username);
-          axios
-            .get(
-              `https://misterh-api-server.onrender.com/api/quiz_player/rank/${response.data.details._id}`
-            )
-            .then((response) => {
-              setRank(response.data.rank);
-            })
-            .catch((error: any) => {
-              console.log(error);
-            });
+          setUsername(response.data.details.username);
           setTimeout(() => {
             setLoading(false);
           }, 1000);
         })
         .catch((error: any) => {
-          console.log(error);
+          setLoading(false);
+          setErrorMessage(error.message);
         });
     }
   };
-  const updateData = async () => {
+
+  const updateData = () => {
     if (player.token) {
+      setLoadingMessage("Authenticating player...");
       setLoading(true);
-      await axios
+      axios
         .post(
           `https://misterh-api-server.onrender.com/api/quiz_player/auth`,
           { username: null },
@@ -176,7 +156,7 @@ export const QuizContextProvider = ({
           }
         )
         .then((response: any) => {
-          console.log("updating data....");
+          setLoadingMessage("Updating data...");
           axios
             .put(
               `https://misterh-api-server.onrender.com/api/quiz_player/update/${response.data.details._id}`,
@@ -186,103 +166,31 @@ export const QuizContextProvider = ({
                 incorrectQuizIds: currIncorrectQuizzes.map((iq) => iq.id),
               }
             )
-            .then((response) => {
-              console.log("updatePassed:", response.data.success);
-              setTimeout(() => {
-                setLoading(false);
-              }, 1000);
+            .then(() => {
+              setLoading(false);
             })
             .catch((error: any) => {
-              console.log(error);
+              setLoading(false);
+              setErrorMessage(error.message);
             });
         })
         .catch((error: any) => {
-          console.log(error);
+          setLoading(false);
+          setErrorMessage(error.message);
         });
     }
   };
-
-  const getUsername = async (setState: Dispatch<SetStateAction<string>>) => {
-    if (player.token) {
-      setLoading(true);
-      axios
-        .post(
-          `https://misterh-api-server.onrender.com/api/quiz_player/auth`,
-          { username: null },
-          {
-            headers: {
-              "quiz-token": player.token,
-            },
-          }
-        )
-        .then((response: any) => {
-          setState(response.data.details.username);
-          setTimeout(() => {
-            setLoading(false);
-          }, 1000);
-        })
-        .catch((error: any) => {
-          console.log(error);
-        });
-    }
-  };
-
-  const authPlayer = async () => {
-    if (player.token) {
-      setLoading(true);
-      await axios
-        .post(
-          `https://misterh-api-server.onrender.com/api/quiz_player/auth`,
-          { username: null },
-          {
-            headers: {
-              "quiz-token": player.token,
-            },
-          }
-        )
-        .then((response: any) => {
-          setComplete(response.data.details.completed);
-          setTimeout(() => {
-            setLoading(false);
-          }, 1000);
-        })
-        .catch((error: any) => {
-          console.log(error);
-        });
-    }
-  };
-  useEffect(() => {
-    if (player.player_id) {
-      setLoading(true);
-      axios
-        .get(
-          `https://misterh-api-server.onrender.com/api/quiz_player/player/${player.player_id}`
-        )
-        .then((response: any) => {
-          setPlayer({
-            ...player,
-            player_id: "",
-            token: response.data.token,
-          });
-          setTimeout(() => {
-            setLoading(false);
-          }, 1000);
-        })
-        .catch((error: any) => {
-          console.log(error);
-        });
-    }
-  }, [player]);
 
   return (
     <QuizContext.Provider
       value={{
         player,
         setPlayer,
-        currPlayer,
-        setCurrPlayer,
+        username,
+        setUsername,
         points,
         rank,
+        setRank,
         setPoints,
         correctQuizzes,
         setCorrectQuizzes,
@@ -297,19 +205,21 @@ export const QuizContextProvider = ({
         setComplete,
         timed,
         loading,
+        loadingMessage,
+        setLoadingMessage,
         showLeaderboard,
+        errorMessage,
+        setErrorMessage,
         setShowLeaderboard,
         setLoading,
         setTimed,
-        getTimeStamp,
-        updateData,
-        updateStats,
         authPlayer,
         expired,
         setExpired,
+        updateData,
       }}
     >
-      {children}
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
     </QuizContext.Provider>
   );
 };

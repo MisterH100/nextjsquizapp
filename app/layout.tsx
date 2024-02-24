@@ -7,7 +7,8 @@ const poppins = Poppins({ subsets: ["latin"], weight: ["400", "500", "900"] });
 
 export const metadata: Metadata = {
   title: "Quiz me",
-  description: "Test your iq with a wide range of quizzes",
+  description:
+    "Test your knowledge, acquire as much points to be the highest in the leader board",
   authors: [
     { name: "Handsome Nyathi", url: "https://thehandsomedev.com" },
     { name: "misterh100", url: "https://github.com/MisterH100" },
