@@ -1,36 +1,30 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+#Quiz Me
+[website](https://quizme-this.vercel.app)
 
-## Getting Started
+## Features
 
-First, run the development server:
+Introducing our Quiz Me app, where simplicity meets innovation! Explore the following key features:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- Unique Usernames: Stand out with distinctive usernames, adding a personal touch to your Quiz Me - experience.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Quiz Points System: Earn points as you tackle challenging questions, creating a dynamic and rewarding quiz journey.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Ranking System: Compete against Quiz Me players worldwide and climb the ranks with our comprehensive ranking system.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+- Medals for Excellence: Achieve greatness and secure medals for claiming the top two ranks in our competitive quizzes.
 
-## Learn More
+- Token-Based Login: Experience hassle-free logins with our secure token-based authentication, ensuring a seamless transition across different browsers.
 
-To learn more about Next.js, take a look at the following resources:
+- Specialized Quizzes: Enjoy unique quizzes designed for specific days, offering a refreshing and diverse quiz selection
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Credits
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+Transparency is key! We want to share that all quizzes featured in our app were carefully curated through outsourcing, particularly utilizing resources from [Mentimeter](https://www.mentimeter.com/blog/audience-energizers/55-free-trivia-and-fun-quiz-question-templates).
 
-## Deploy on Vercel
+Moreover, we owe the aesthetic appeal of our app to the incredible icons sourced from [svgrepo](https://www.svgrepo.com/). These icons contribute to the visual richness and user-friendly interface of our platform.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## More
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Exciting news! Our project is now open to public contributions. If you're passionate about making a positive impact, we welcome your collaboration. Feel free to dive into the code, suggest improvements, or contribute new features.
+
+Visit our project repository (https://github.com/MisterH100/nextjsquizapp)[https://github.com/MisterH100/nextjsquizapp] and join us in shaping the future of Quiz Me. Together, we can achieve greatness!

@@ -37,6 +37,7 @@ export const PlayCards = () => {
           <Button
             className="w-[200px] bg-white hover:text-white border-white"
             variant={"outline"}
+            disabled={complete}
             onClick={() => {
               if (!complete) {
                 router.push("/quiz");
@@ -47,6 +48,11 @@ export const PlayCards = () => {
           >
             Play
           </Button>
+          {complete && (
+            <CardDescription className="text-white">
+              next quiz coming soon...
+            </CardDescription>
+          )}
         </CardContent>
       </Card>
       <Card className="w-full md:w-[400px] bg-red-600 border-none">
@@ -70,6 +76,7 @@ export const PlayCards = () => {
           <Button
             className="w-[200px] bg-white hover:text-white border-white"
             variant={"outline"}
+            disabled={complete}
             onClick={() => {
               setTimed(true);
               if (!complete) {
@@ -81,6 +88,11 @@ export const PlayCards = () => {
           >
             Play
           </Button>
+          {complete && (
+            <CardDescription className="text-white">
+              next quiz coming soon...
+            </CardDescription>
+          )}
         </CardContent>
       </Card>
     </div>

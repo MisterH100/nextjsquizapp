@@ -27,7 +27,7 @@ export const ProfileCard = (props: IProfileProps) => {
   const [copied, setCopied] = useState(false);
 
   return (
-    <Card className="bg-white mt-40 w-full md:w-3/4">
+    <Card className="bg-white my-10 w-full md:w-3/4">
       <CardHeader className="flex-row justify-between items-center">
         <span className="text-2xl">Profile</span>
         <Button variant={"outline"} onClick={() => router.push("/")}>
@@ -36,6 +36,7 @@ export const ProfileCard = (props: IProfileProps) => {
       </CardHeader>
       <CardContent>
         <CardTitle>Info</CardTitle>
+
         <CardDescription className="pt-5">Username</CardDescription>
         <CardTitle className="font-medium text-lg">{props.username}</CardTitle>
         <CardDescription className="pt-5">Token</CardDescription>
@@ -60,7 +61,7 @@ export const ProfileCard = (props: IProfileProps) => {
         </div>
         <Separator className="bg-gray-500 my-5" />
         <CardTitle>Stats</CardTitle>
-        <div className="flex justify-between items-center">
+        <div className="grid grid-cols-2">
           <div>
             <CardDescription className="pt-5">Points</CardDescription>
             <CardTitle className="font-medium text-lg">
@@ -68,9 +69,15 @@ export const ProfileCard = (props: IProfileProps) => {
             </CardTitle>
           </div>
           <div>
-            <CardDescription className="pt-5">Rank</CardDescription>
+            <CardDescription className="pt-5 text-right">Rank</CardDescription>
             <CardTitle className="font-medium text-lg text-right">
               {props.rank}
+            </CardTitle>
+          </div>
+          <div>
+            <CardDescription className="pt-5">Medal</CardDescription>
+            <CardTitle className="font-medium text-lg">
+              {props.rank == 1 ? "Gold" : props.rank == 2 ? "Silver" : "none"}
             </CardTitle>
           </div>
         </div>
