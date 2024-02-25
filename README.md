@@ -27,4 +27,4 @@ Moreover, we owe the aesthetic appeal of our app to the incredible icons sourced
 
 Exciting news! Our project is now open to public contributions. If you're passionate about making a positive impact, we welcome your collaboration. Feel free to dive into the code, suggest improvements, or contribute new features.
 
-Visit our project repository (https://github.com/MisterH100/nextjsquizapp)[https://github.com/MisterH100/nextjsquizapp] and join us in shaping the future of Quiz Me. Together, we can achieve greatness!
+Visit our project repository [https://github.com/MisterH100/nextjsquizapp](https://github.com/MisterH100/nextjsquizapp) and join us in shaping the future of Quiz Me. Together, we can achieve greatness!
