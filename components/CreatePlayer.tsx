@@ -17,6 +17,7 @@ import { Button } from "./ui/button";
 import { useQuizContext } from "@/lib/globalContext";
 import axios from "axios";
 import Link from "next/link";
+import { error } from "console";
 
 const usernameSchema = z.object({
   username: z
@@ -31,7 +32,6 @@ const usernameSchema = z.object({
 
 export const Modal = () => {
   const {
-    username,
     loading,
     setUsername,
     setPlayer,
@@ -53,19 +53,24 @@ export const Modal = () => {
         username: values.username,
       })
       .then((response) => {
-        axios
-          .get(
-            `https://misterh-api-server.onrender.com/api/quiz_player/player/${response.data._id}`
-          )
-          .then((response: any) => {
-            setPlayer({ token: response.data.token });
-            setUsername(response.data.username);
-            setLoading(false);
-          })
-          .catch((error: any) => {
-            setErrorMessage(error.message);
-            setLoading(false);
-          });
+        if (response.data._id != null) {
+          axios
+            .get(
+              `https://misterh-api-server.onrender.com/api/quiz_player/player/${response.data._id}`
+            )
+            .then((response: any) => {
+              setPlayer({ token: response.data.token });
+              setUsername(response.data.username);
+              setLoading(false);
+            })
+            .catch((error: any) => {
+              setErrorMessage(error.message);
+              setLoading(false);
+            });
+        } else {
+          setLoading(false);
+          form.setError("username", { message: response.data.message });
+        }
       })
       .catch((error: any) => {
         setErrorMessage(error.message);

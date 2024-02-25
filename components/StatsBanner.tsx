@@ -13,6 +13,8 @@ import pointsIcon from "@/public/points.svg";
 import correctIcon from "@/public/correct.svg";
 import incorrectIcon from "@/public/incorrect.svg";
 import rankingIcon from "@/public/ranking.svg";
+import goldMedal from "@/public/gold_medal.svg";
+import silverMedal from "@/public/silver_medal.svg";
 import { Separator } from "@/components/ui/separator";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -32,8 +34,28 @@ export const StatsBanner = (props: IBannerProps) => {
     <div className="flex justify-center pt-40">
       <Card className="w-full sm:w-[500px] md:w-[850px] bg-white border-none mb-10 mx-auto rounded-t-xl">
         <CardHeader>
-          <CardTitle className="text-xl truncate">
+          <CardTitle className="text-xl flex items-center justify-between">
             <Link href="/stats">{props.username}</Link>
+            {props.rank == 1 && (
+              <Image
+                src={goldMedal}
+                alt="gold-medal-icon"
+                className="w-10 h-10"
+                width={40}
+                height={40}
+                priority
+              />
+            )}
+            {props.rank == 2 && (
+              <Image
+                src={silverMedal}
+                alt="gold-medal-icon"
+                className="w-10 h-10"
+                width={40}
+                height={40}
+                priority
+              />
+            )}
           </CardTitle>
         </CardHeader>
         {props.points != 0 && totalQuizzes != 0 ? (
@@ -54,7 +76,7 @@ export const StatsBanner = (props: IBannerProps) => {
                       width={14}
                       height={14}
                       priority
-                    />{" "}
+                    />
                     Points: <span className="font-bold">{props.points}</span>
                   </div>
                   <div>
@@ -84,7 +106,7 @@ export const StatsBanner = (props: IBannerProps) => {
                       height={12}
                       priority
                     />
-                    Correct quizzes:{" "}
+                    Correct quizzes:
                     <span className="font-normal">
                       {props.correctQuizzes.length}
                     </span>
@@ -98,7 +120,7 @@ export const StatsBanner = (props: IBannerProps) => {
                       height={12}
                       priority
                     />{" "}
-                    Incorrect Quizzes:{" "}
+                    Incorrect Quizzes:
                     <span className="font-normal">
                       {props.incorrectQuizzes.length}
                     </span>

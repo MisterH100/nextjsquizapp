@@ -8,6 +8,7 @@ import { ErrorModal } from "@/components/Error";
 import { PlayCards } from "@/components/PlayCards";
 import { Modal } from "@/components/CreatePlayer";
 import { useEffect, useState } from "react";
+import { Header } from "@/components/Header";
 
 export default function Home() {
   const {
@@ -76,6 +77,7 @@ export default function Home() {
 
   return (
     <div>
+      <Header />
       {usernameModal && <Modal />}
       <StatsBanner
         username={username}
